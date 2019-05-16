@@ -47,6 +47,7 @@ void intersection_line_circle(point c,double r,point l1,point l2,point& p1,point
     p2.x=p.x-(l2.x-l1.x)*t;
     p2.y=p.y-(l2.y-l1.y)*t;
 }
+
 point ptoseg(point p,point l1,point l2)            //点到线段的最近距离
 {
     point t=p;

@@ -1,7 +1,7 @@
-const int maxn=;
+const int MAXN=;
 
-bool vis[maxn];
-int prime[maxn],cnt;
+bool vis[MAXN];
+int prime[MAXN],cnt;
 void get_prime(int n)
 {
 	memset(vis,0,sizeof(vis));

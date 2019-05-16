@@ -1,4 +1,4 @@
-//ÏßÐÔÉ¸ÇóÄæÔª±í
+//ï¿½ï¿½ï¿½ï¿½É¸ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
 const ll p=mod;
 ll inv[p-1]; 
 
@@ -7,7 +7,7 @@ void solve()
    inv[1]=1;
    for (int i=2;i<=p-1;i++)
    {
-   	   ll a=p/i;
+   	ll a=p/i;
 	   ll b=p%i;
 	   inv[i]=(-a*inv[b])%p;
    }

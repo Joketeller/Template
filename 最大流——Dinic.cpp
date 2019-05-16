@@ -73,8 +73,10 @@ struct Dinic
 		}
 		return flow;
 	}
-	int maxflow()
+	int maxflow(int s,int t)
 	{
+		this->s = s;
+		this->t = t;
 		int  flow=0;
 		while (bfs())
 		{

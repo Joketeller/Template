@@ -1,21 +1,21 @@
-
-
- 
-
-
-int exgcd(int a,int p,int &x,int &y)  
+typedef long long ll;
+void extgcd(ll a, ll b, ll &d, ll &x, ll &y)
 {
-	int d=a;
-	if (p!=0)
+	if (!b)
 	{
-		d=exgcd(p,a%p,y,x);
-		y-=(a/p)*x; 
+		d = a;
+		x = 1;
+		y = 0;
 	}
-	else 
+	else
 	{
-		x=1;
-		y=0;
+		extgcd(b, a % b, d, y, x);
+		y -= x * (a / b);
 	}
-	return d;
 }
-
+ll inverse(ll a, ll n)
+{
+	ll d, x, y;
+	extgcd(a, n, d, x, y);
+	return d == 1 ? (x + n) % n : -1;
+}

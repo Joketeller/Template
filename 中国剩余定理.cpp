@@ -1,4 +1,4 @@
-//ÖÐ¹úÊ£Óà¶¨Àí 
+//a 为 余数， m为模数
 #include <cstdio>
 #include <algorithm>
 #define maxn 100000

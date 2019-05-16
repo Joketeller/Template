@@ -1,30 +1,89 @@
-struct segtree{
-    int lson,rson,tag;ll sum;
-}t[200010<<5];//数组要开的够大，比一般线段树大
-int root[200010],treesize;
-void push_down(int k,int lenl,int lenr)//还要传左右儿子的区间长度
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 10;
+int n, m;
+int cnt;
+struct node
 {
-    int tmp=t[k].tag;t[k].tag=0;
-	//检查左右儿子是否存在，有可能修改打了lazytag没递归下去建点
-    if (!t[k].lson)t[t[k].lson=++treesize]=(segtree){0,0,0,0ll};
-	if (!t[k].rson)t[t[k].rson=++treesize]=(segtree){0,0,0,0ll};
-    t[t[k].lson].sum+=lenl*tmp;t[t[k].lson].tag+=tmp;
-    t[t[k].rson].sum+=lenr*tmp;t[t[k].rson].tag+=tmp;
-}
-void modify(int &k,int old,int l,int r,int x,int y,int d)//在旧节点上修改并新建节点
+    int L, R; //分别指向左右子树
+    int sum;  //该节点所管辖区间范围内数的个数
+    node()
+    {
+        sum = 0;
+    }
+} Tree[maxn * 20];
+
+struct value
 {
-    t[k=++treesize]=(segtree){0,0,0,0ll};
-    //新建一个节点
-    int mid=(l+r)>>1;
-	if (t[old].tag&&l!=r)push_down(old,mid-l+1,r-mid);
-    //如果旧节点有tag而且不是叶节点就要下传
-    if (l==x&&r==y){t[k].sum=(ll)(r-l+1)*d;t[k].tag=d;return;}
-    if (y<=mid)modify(t[k].lson,t[old].lson,l,mid,x,y,d),t[k].rson=t[old].rson;
-    //左边递归处理，右边照抄上一版本
-    else if (x>mid)t[k].lson=t[old].lson,modify(t[k].rson,t[old].rson,mid+1,r,x,y,d);
-    //左边照抄上一版本，右边递归处理
-    else modify(t[k].lson,t[old].lson,l,mid,x,mid,d),modify(t[k].rson,t[old].rson,mid+1,r,mid+1,y,d);
-    //左右都递归处理
-    push_up(k);
+    int x;  //值的大小
+    int id; //离散之前在原数组中的位置
+    bool operator<(const value &b)
+        const
+    {
+        return x < b.x;
+    }
+} Value[maxn];
+
+int root[maxn]; //多颗线段树的根节点
+int rk[maxn];   //原数组离散之后的数组
+void init()
+{
+    cnt = 1;
+    root[0] = 0;
+    Tree[0].L = Tree[0].R = Tree[0].sum = 0;
 }
-//modify(root[i],root[i-1],1,n,x,y,d);这样只在上一个版本上多加log个点
+
+void update(int num, int &rt, int l, int r)
+{
+    Tree[cnt++] = Tree[rt];
+    rt = cnt - 1;
+    Tree[rt].sum++;
+    if (l == r)
+        return;
+    int mid = (l + r) >> 1;
+    if (num <= mid)
+        update(num, Tree[rt].L, l, mid);
+    else
+        update(num, Tree[rt].R, mid + 1, r);
+}
+
+int query(int i, int j, int k, int l, int r)
+{
+    int d = Tree[Tree[j].L].sum - Tree[Tree[i].L].sum;
+    if (l == r)
+        return l;
+    int mid = (l + r) >> 1;
+    if (k <= d)
+        return query(Tree[i].L, Tree[j].L, k, l, mid);
+    else
+        return query(Tree[i].R, Tree[j].R, k - d, mid + 1, r);
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i++)
+    {
+        scanf("%d", &Value[i].x);
+        Value[i].id = i;
+    }
+    //进行离散化
+    sort(Value + 1, Value + n + 1);
+    for (int i = 1; i <= n; i++)
+    {
+        rk[Value[i].id] = i;
+    }
+    init();
+    for (int i = 1; i <= n; i++)
+    {
+        root[i] = root[i - 1];
+        update(rk[i], root[i], 1, n);
+    }
+    int left, right, k;
+    for (int i = 1; i <= m; i++)
+    {
+        scanf("%d%d%d", &left, &right, &k);
+        printf("%d\n", Value[query(root[left - 1], root[right], k, 1, n)].x);
+    }
+    return 0;
+}

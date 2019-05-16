@@ -1,3 +1,4 @@
+
 #define MAXN                                      //点的个数
 #define MAXM                                      //边的条数
 #define INF 0x7fffffff
@@ -36,7 +37,7 @@ struct Dinic_mincost
 	    edge[tol]. next = head[v];
 	    head[v] = tol++;
 	}
-	bool spfa(int s, int t)
+	bool spfa(int s, int t) //源点，汇点
 	{
 	    queue<int> q;
 	    for(int i = 0; i < N; i++)
@@ -72,7 +73,7 @@ struct Dinic_mincost
 	    if(pre[t] == -1) return false;
 	    else return true;
 	}
-	//返回的是最大流， cost存的是最小费用
+	//返回的是最大流容量， cost存的是最小费用
 	int minCostMaxflow(int s, int t, int &cost)
 	{
 	    int flow = 0;
