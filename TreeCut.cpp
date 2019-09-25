@@ -2,6 +2,8 @@
 using namespace std;
 const int MOD=1e9+7;
 /******************************树链剖分******************************/
+/*  
+ */
 struct treenode
 {
     int val;
@@ -19,7 +21,7 @@ struct Edge
     int u, v;
 };
 
-class TreeCutcd 
+class TreeCut
 {
 #define maxn 100005
 #define maxm maxn<<1
@@ -48,6 +50,8 @@ public:
         {
             t[++id].val=tmp;
         }
+        if (!TreeSize)
+            TreeSize=id;
     }
 
     void ReadValues()
@@ -226,10 +230,10 @@ public:
     }
 
     //完成树链剖分
-    void CutTree()
+    void CutTree(int _root=1)
     {
-        relationshipDFS(1, 0, 1);
-        ReIndexDFS(1, 1);
+        relationshipDFS(_root, 0, 1);
+        ReIndexDFS(_root, _root);
         SegmentTreeBuild(1, 1, cnt);
     }
 
@@ -237,7 +241,7 @@ public:
     {
         while (t[x].topfather!=t[y].topfather)
         {
-            if (t[x].depth<t[y].depth)
+            if (t[t[x].topfather].depth<t[t[y].topfather].depth)
                 swap(x,y);
             x=t[t[x].topfather].father;
         }
