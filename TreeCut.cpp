@@ -37,10 +37,28 @@ public:
     void init(int _size=0)
     {
         memset(head, 0, sizeof(head));
-        TreeSize = EdgeSize = cnt  = 0;
+        EdgeSize = cnt  = 0;
+        TreeSize=_size;
     }
 
-    void addedge(int _u,int _v)
+    void SetValues(vector<int> &vals)
+    {
+        int id=0;
+        for (auto &tmp:vals)
+        {
+            t[++id].val=tmp;
+        }
+    }
+
+    void ReadValues()
+    {
+        for (int i = 1; i <= TreeSize;i++)
+        {
+            cin >> t[i].val;
+        }
+    }
+
+    void AddEdge(int _u,int _v)
     {
         ++EdgeSize;
         to[EdgeSize] = _v;
@@ -115,8 +133,8 @@ public:
     {
         if (!segt[rt].lazy)
             return;
-        segt[lson].val=(segt[lson].val+ segt[rt].val*segt[lson].size)%MOD;
-        segt[rson].val=(segt[rson].val+ segt[rt].val*segt[rson].size)%MOD;
+        segt[lson].val=(segt[lson].val+ segt[rt].lazy*segt[lson].size)%MOD;
+        segt[rson].val=(segt[rson].val+ segt[rt].lazy*segt[rson].size)%MOD;
         segt[lson].lazy=(segt[lson].lazy+segt[rt].lazy)%MOD;
         segt[rson].lazy=(segt[rson].lazy+segt[rt].lazy)%MOD;
         segt[rt].lazy=0;
@@ -164,7 +182,7 @@ public:
         {
             if (t[t[x].topfather].depth < t[t[y].topfather].depth)
                 swap(x,y);
-            ans=(ans+IntervalSum(1,t[t[x].topfather].index,t[x].index))%MOD;
+            ans = (ans + IntervalSum(1, t[t[x].topfather].index, t[x].index)) % MOD;
             x=t[t[x].topfather].father;
         }
         if (t[x].depth>t[y].depth)
@@ -187,7 +205,40 @@ public:
          IntervalAdd(1,t[x].index,t[y].index,v);
     }
 
-    
+    //x的子树权值+v
+    void SubTreeAdd(int x,int v)
+    {
+        IntervalAdd(1, t[x].index, t[x].index + t[x].treesize - 1, v);
+    }
+
+    //单点x 权值+v
+    void NodeAdd(int x,int v)
+    {
+        IntervalAdd(1, t[x].index, t[x].index, v);
+    }
+
+    //询问x到根上权值和
+    int QueryNodeToRoot(int x)
+    {
+        return (TreeSum(1,x)+MOD)%MOD;
+    }
+
+    void CutTree()
+    {
+        relationshipDFS(1, 0, 1);
+        ReIndexDFS(1, 1);
+        SegmentTreeBuild(1, 1, cnt);
+    }
+
+    void debug()
+    {
+        cout << "vals" << endl;
+        for (int i = 1; i <= cnt;i++)
+            cout << val[i] << " ";
+        cout << endl
+             << "-------------------------------" << endl;
+    }
+
 #undef maxn
 #undef maxm
 #undef lson
