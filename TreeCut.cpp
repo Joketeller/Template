@@ -173,13 +173,21 @@ public:
         return ans;
     }
 
-    void TreeAdd(int x,int y,int val)
+    void TreeAdd(int x,int y,int v)
     {
-
+         while (t[x].topfather!=t[y].topfather)
+        {
+            if (t[t[x].topfather].depth < t[t[y].topfather].depth)
+                swap(x,y);
+            IntervalAdd(1,t[t[x].topfather].index,t[x].index,v);
+            x=t[t[x].topfather].father;
+        }
+        if (t[x].depth>t[y].depth)
+            swap(x,y);
+         IntervalAdd(1,t[x].index,t[y].index,v);
     }
 
     
-
 #undef maxn
 #undef maxm
 #undef lson
