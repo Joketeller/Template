@@ -22,7 +22,7 @@ struct Edge
 class TreeCut
 {
 #define maxn 100005
-#define maxm 1000005
+#define maxm maxn<<1
 #define lson rt<<1
 #define rson rt<<1|1
 private:
@@ -175,7 +175,8 @@ public:
         return ans;
     }
 
-    int TreeSum(int x,int y)   //x,y路径求和
+    //x,y路径求和
+    int TreeSum(int x,int y)   
     {
         int ans=0;
         while (t[x].topfather!=t[y].topfather)
@@ -191,6 +192,7 @@ public:
         return ans;
     }
 
+    //x节点到y节点路径上的点权值+v
     void TreeAdd(int x,int y,int v)
     {
          while (t[x].topfather!=t[y].topfather)
@@ -223,6 +225,7 @@ public:
         return (TreeSum(1,x)+MOD)%MOD;
     }
 
+    //完成树链剖分
     void CutTree()
     {
         relationshipDFS(1, 0, 1);
