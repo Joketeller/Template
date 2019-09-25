@@ -70,3 +70,15 @@ struct DDBIT
         return ans;
     }
 };
+
+
+void ADDPRE(int x, int c)
+{
+     for (int i=x; i<=n; i+=i&(-i)) a[i] += c;
+}
+int SUMPRE(int x)
+{
+    int s = 0;
+    for (int i=x; i>0; i-=i&(-i)) s += a[i];
+    return s;
+}

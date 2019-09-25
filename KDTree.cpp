@@ -479,3 +479,102 @@ int main()
     printf("%d\n",ans);
     return 0;
 }
+
+/*可能有点问题的板子，支持插入和查询曼哈顿距离*/
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#define N 100005
+#define inf (1<<30)
+#define scan(x) scanf("%d",&x)
+using namespace std;
+const int k=3;
+int n,m,dim,rt,ans,num=0;
+struct node{int p[k],minn[k],maxx[k];}a[N];
+bool cmp(node x,node y){ return x.p[dim]<y.p[dim]; }
+struct kd_tree{
+    int c[N][2];
+    node s[N],q;
+    void update(int o)
+    {//管辖范围
+        int l=c[o][0],r=c[o][1];
+        for(int i=0;i<k;i++){
+            if(l){ s[o].minn[i]=min(s[o].minn[i],s[l].minn[i]); s[o].maxx[i]=max(s[o].maxx[i],s[l].maxx[i]); }
+            if(r){ s[o].minn[i]=min(s[o].minn[i],s[r].minn[i]); s[o].maxx[i]=max(s[o].maxx[i],s[r].maxx[i]); }
+        }
+    }
+    void add(int o,node t){ for(int i=0;i<k;i++)s[o].minn[i]=s[o].maxx[i]=s[o].p[i]=t.p[i]; }
+    int dist(node t,int o)
+    {
+        int tmp=0;
+        for(int i=0;i<k;i++) tmp+=max(0,s[o].minn[i]-t.p[i]);
+        for(int i=0;i<k;i++) tmp+=max(0,t.p[i]-s[o].maxx[i]);
+        return tmp;
+    }//?
+    void build(int &o,int l,int r,int now)
+    {
+        o=(l+r)>>1; dim=now%k;
+        nth_element(a+l,a+o,a+r+1,cmp);
+        add(o,a[o]);
+        if(l<o) build(c[o][0],l,o-1,now+1);
+        if(o<r) build(c[o][1],o+1,r,now+1);
+        update(o);
+    }
+
+    void ins(int o,int now){
+        now%=k;
+        if(q.p[now]<s[o].p[now]){
+            if(c[o][0]) ins(c[o][0],now+1);
+            else c[o][0]=++n,add(n,q);
+        }
+        else{
+            if(c[o][1]) ins(c[o][1],now+1);
+            else c[o][1]=++n,add(n,q);
+        }
+        update(o);
+    }
+    void qry(int o){//曼哈顿距离,且只求最短，dis是最短距离
+        int tmp=0;
+        for(int i=0;i<k;i++) tmp+=abs(s[o].p[i]-q.p[i]);
+        ans=min(ans,tmp);
+        int dl=c[o][0]?dist(q,c[o][0]):inf,dr=c[o][1]?dist(q,c[o][1]):inf;
+        if(dl<dr)
+        {
+            if(dl<ans) qry(c[o][0]);
+            if(dr<ans) qry(c[o][1]);
+        }else{
+            if(dr<ans) qry(c[o][1]);
+            if(dl<ans) qry(c[o][0]);
+        }
+    }
+}kd;
+int tmp;
+int main()
+{
+    // k=3;
+    scan(tmp),scan(tmp),scan(tmp),scan(m);
+    scan(tmp),scan(a[1].p[0]),scan(a[1].p[1]),scan(a[1].p[2]);
+    ++num;
+    kd.build(rt,1,1,0);
+    --m;
+    while(m--){
+        scan(tmp);
+        scanf("%d%d%d",&kd.q.p[0],&kd.q.p[1],&kd.q.p[2]);
+        if(tmp==1)
+        { 
+            a[++num]=kd.q;
+            if (num%5000==0)
+                kd.build(rt,1,num,0);
+            else
+            {
+                kd.ins(rt,0);
+            }
+            
+        }
+        else{
+            ans=inf; kd.qry(rt); printf("%d\n",ans);
+        }
+    }
+    return 0;
+}

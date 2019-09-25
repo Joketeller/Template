@@ -87,7 +87,7 @@ struct PAMtree
 
     void count() //统计本质相同侧回文串个数
     {
-        for (int i = size - 1; i >= 0; i++)
+        for (int i = size - 1; i >= 0; i--)
         {
             t[i].fail->cnt += t[i].cnt;
         }

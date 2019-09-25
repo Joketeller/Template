@@ -1,5 +1,5 @@
 
-const int maxn = 400;   //位数
+const int maxn = 1e6+10;   //位数
 
 struct bign{
     int d[maxn], len;
