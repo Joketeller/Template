@@ -19,7 +19,7 @@ struct Edge
     int u, v;
 };
 
-class TreeCut
+class TreeCutcd 
 {
 #define maxn 100005
 #define maxm maxn<<1
@@ -231,6 +231,19 @@ public:
         relationshipDFS(1, 0, 1);
         ReIndexDFS(1, 1);
         SegmentTreeBuild(1, 1, cnt);
+    }
+
+    int LCA(int x,int y)
+    {
+        while (t[x].topfather!=t[y].topfather)
+        {
+            if (t[x].depth<t[y].depth)
+                swap(x,y);
+            x=t[t[x].topfather].father;
+        }
+        if (t[x].depth>t[y].depth)
+            swap(x,y);
+        return x;
     }
 
     void debug()
