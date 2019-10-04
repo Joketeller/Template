@@ -1,5 +1,13 @@
-bool Finish_read;
-template<class T>inline void read(T &x) { Finish_read = 0; x = 0; int f = 1; char ch = getchar(); while (!isdigit(ch)) { if (ch == '-')f = -1; if (ch == EOF)return; ch = getchar(); }while (isdigit(ch))x = x * 10 + ch - '0', ch = getchar(); x *= f; Finish_read = 1; }
-template<class T>inline void print(T x) { if (x / 10 != 0)print(x / 10); putchar(x % 10 + '0'); }
-template<class T>inline void writeln(T x) { if (x<0)putchar('-'); x = abs(x); print(x); putchar('\n'); }
-template<class T>inline void write(T x) { if (x<0)putchar('-'); x = abs(x); print(x); putchar(' '); }
+
+/**********************read**************************/
+template<typename T>void read(T &x)
+{
+    x=0; int w=0; char c=0;
+    while (c<'0'||c>'9') w|=c=='-',c=getchar();
+    while (c>='0'&&c<='9') x=(x<<1)+(x<<3)+(c^48),c=getchar();
+    x=w?-x:x;
+}
+template <typename T,typename... Args> inline void read(T& t, Args&... args)
+{
+    read(t);read(args...);
+}

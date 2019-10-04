@@ -4,7 +4,9 @@
 using namespace std;
 typedef long long ll;
 const int K=5;
-int Case,n,i,x;ll ans;map<int,ll>T[K];
+int Case, n, i, x;
+ll ans;
+map<int, ll> T[K];
 void ins(int o,int x,ll p){
   if(o>=K)return;
   T[o][x]+=p;

@@ -214,6 +214,131 @@ int main(){
 /**********************************************************/
 
 
-/*********************距离为k点对个数****************************/
+#include<cstdio>
+#include<cstdlib>
+#include<iostream>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+#define maxn 10002
+#define INF 2147483646
+#define ll long long
+using namespace std;
 
+inline int gi()
+{
+  int date = 0,m = 1; char ch = 0;
+  while(ch!='-'&&(ch<'0'||ch>'9'))ch = getchar();
+  if(ch=='-'){m = -1; ch = getchar();}
+  while(ch>='0' && ch<='9')
+    {
+      date = date*10+ch-'0';
+      ch = getchar();
+    }return date*m;
+}
+inline void write(ll qw)
+{
+  if(qw<0){putchar('-'); qw = -qw;}
+  if(qw>9)write(qw/10);
+  putchar(qw%10+'0');
+}
+
+struct node{int to,next,len;}t[2*maxn+5];
+int head[maxn+5];
+int sim[maxn+5],mxson[maxn+5];
+bool vis[maxn+5];
+int MX,root,dis[maxn+5],summar;
+ll ans;
+int n,k,cnt,S;
+
+void addedge(int u,int v,int l)
+{
+  cnt ++;
+  t[cnt].to = v;
+  t[cnt].next = head[u];
+  t[cnt].len = l;
+  head[u] = cnt;
+  return;
+}
+
+void getroot(int u,int fa)
+{
+  sim[u] = 1; mxson[u] = 0;
+  for(int i = head[u];i;i = t[i].next)
+    {
+      int v = t[i].to;
+      if(v == fa || vis[v])continue;
+      getroot(v,u);
+      sim[u] = sim[u] + sim[v];
+      mxson[u] = max(sim[v],mxson[u]);
+    }
+  mxson[u] = max(mxson[u],S-sim[u]);
+  if(mxson[u]<MX){root = u;MX = mxson[u];}
+}
+
+void getdis(int u,int fa,int dist)
+{
+  dis[++summar] = dist;
+  for(int i = head[u];i;i=t[i].next)
+    {
+      int v = t[i].to;
+      if(vis[v]||v == fa)continue;
+      getdis(v,u,dist+t[i].len);
+    }
+  return;
+}
+
+int consolate(int sta,int len1)
+{
+  summar = 0;
+  memset(dis,0,sizeof(dis));
+  getdis(sta,0,len1);
+  sort(dis+1,dis+summar+1);
+  int L = 1,R = summar,tep=0;
+  while(L<=R)
+    {
+      if(dis[R] + dis[L]<=k){tep = tep + R - L; L++;}
+      else R--;
+    }
+  return tep;
+}
+
+void Divide(int tr)
+{
+  ans = ans + consolate(tr,0);
+  vis[tr] = true;
+  for(int i = head[tr];i;i = t[i].next)
+    {
+      int v = t[i].to;
+      if(vis[v])continue;
+      ans = ans - consolate(v,t[i].len);
+      S = sim[v]; root = 0;
+      MX = INF; getroot(v,0);
+      Divide(root);
+    }
+  return;
+}
+
+int main()
+{
+  freopen("Tree.in","r",stdin);
+  int u,v,l;
+  while(1)
+    {
+      n = gi(); k = gi();
+      if(n == 0 && k == 0)break;
+      cnt = 0; memset(head,0,sizeof(head));
+      for(int i = 1; i <= n - 1; i ++)
+    {
+      u = gi(); v = gi(); l = gi();
+      addedge(u,v,l); addedge(v,u,l);
+    }
+      ans = 0;
+      memset(vis,0,sizeof(vis));
+      MX = INF ; S = n; getroot(1,0);
+      Divide(root);
+      write(ans);putchar('\n');
+    }
+  return 0;
+}
 
