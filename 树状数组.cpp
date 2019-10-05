@@ -1,11 +1,12 @@
-inline int low_bit(int x)
-{
-    return x & -x;
-}
+
 struct BIT
 {
     int n;
     int value[MAXN];
+    inline int low_bit(int x)
+    {   
+        return x & -x;
+    }
     void init(int n)
     {
         this->n = n;
